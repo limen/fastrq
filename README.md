@@ -1,5 +1,7 @@
 # Fastrq - Queue, Stack and Priority Queue built on Redis
 
+[![Build Status](https://travis-ci.org/limen/fastrq.svg?branch=master)](https://travis-ci.org/limen/fastrq)
+
 ## Features
 
 + Abstract Queue, Deque, Capped Queue/Deque, and Overflow-able Capped Queue/Deque
