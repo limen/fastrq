@@ -101,7 +101,7 @@ q = Queue("fastrq_queue")
 q.push(1)
 q.push([2, 3])
 q.ttl(10)   # set the lifetime in seconds
-q.range()  # got ['1', '2', '3']
+q.range(0, -1)  # got ['1', '2', '3']
 q.range(0, 1)  # got ['1', '2']
 q.pop()
 q.pop(2)
