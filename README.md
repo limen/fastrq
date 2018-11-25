@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/limen/fastrq.svg?branch=master)](https://travis-ci.org/limen/fastrq)
 
+[Fastrq for PHP](https://github.com/limen/fastrq-php)
+
 ## Features
 
 + Abstract Queue, Deque, Capped Queue/Deque, and Overflow-able Capped Queue/Deque
