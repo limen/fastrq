@@ -26,6 +26,12 @@ class TestDeque(unittest.TestCase):
         self.assertEqual(head3, ['7', '6', '5'])
         self.assertEqual(self.queue.pop_back(3), ['2', '3', '4'])
         self.assertEqual(self.queue.pop(), None)
+
+    def test_push_ni(self):
+        self.assertEquals(self.queue.push_ni(1), [1, True])
+        self.assertEquals(self.queue.push_ni(2), [2, True])
+        self.assertEquals(self.queue.push_ni(4), [3, True])
+        self.assertEquals(self.queue.push_ni(4), [3, False])
     
     def test_range(self):
         self.queue.push_back((1, 2, 3, 4))

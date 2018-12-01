@@ -4,7 +4,7 @@ from . import queue, deque, stack, priorityqueue
 
 
 name = 'fastrq'
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 def version():
     return __version__

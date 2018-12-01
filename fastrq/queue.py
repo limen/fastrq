@@ -19,6 +19,13 @@ class Queue(Base):
             return [x for x in p if x is not None]
         else:
             return p[0] if len(p) > 0 else None
+
+    def push_ni(self, member):
+        """ Push only if the member not inside the queue
+        """
+        script = load('queue_push_not_in')
+        rs = self._run_lua_script(script, [self._key], [member])
+        return [rs[0], bool(rs[1])] if isinstance(rs, list) else rs
     
     def range(self, start, end):
         return self.connect().lrange(self._key, start, end)
@@ -45,9 +52,24 @@ class CappedQueue(Queue):
     def push(self, values):
         script = load('capped_queue_push')
         return self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
-    
 
+    def push_ni(self, member):
+        """ Push only if the member not inside the queue
+        """
+        script = load('capped_queue_push_not_in')
+        rs = self._run_lua_script(script, [self._key], (self._cap, member))
+        print('capped-queue-push-ni', rs)
+        return [rs[0], bool(rs[1])] if isinstance(rs, list) else rs
+
+    
 class OfCappedQueue(CappedQueue):
     def push(self, values):
         script = load('of_capped_queue_push')
         return self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
+
+    def push_ni(self, member):
+        """ Push only if the member not inside the queue
+        """
+        script = load('of_capped_queue_push_not_in')
+        rs = self._run_lua_script(script, [self._key], (self._cap, member))
+        return [rs[0], rs[1], bool(rs[2])] if isinstance(rs, list) else rs

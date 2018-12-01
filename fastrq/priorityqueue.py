@@ -12,6 +12,14 @@ class PriorityQueue(Base):
         script = load('priority_queue_push')
         return self._run_lua_script(script, (self._key,), self._makevalues(values))
     
+    def push_ni(self, member, score):
+        """ Push only if the member not inside the queue
+        """
+        script = load('priority_queue_push_not_in')
+        rs = self._run_lua_script(script, (self._key,), (score, member))
+        print('pq-push-ni', rs)
+        return [rs[0], bool(rs[1])] if isinstance(rs, list) else rs
+    
     def pop(self, count=1):
         script = load('priority_queue_pop')
         p = self._run_lua_script(script, (self._key,), (count,))
@@ -59,9 +67,24 @@ class CappedPriorityQueue(PriorityQueue):
         script = load('capped_priority_queue_push')
         return self._run_lua_script(script, (self._key,), [self._cap] + self._makevalues(values))
     
+    def push_ni(self, member, score):
+        """ Push only if the member not inside the queue
+        """
+        script = load('capped_priority_queue_push_not_in')
+        rs = self._run_lua_script(script, (self._key,), (self._cap, score, member))
+        return [rs[0], bool(rs[1])] if isinstance(rs, list) else rs
+    
 
 class OfCappedPriorityQueue(CappedPriorityQueue):
     def push(self, values):
         script = load('of_capped_priority_queue_push')
         p = self._run_lua_script(script, (self._key,), [self._cap] + self._makevalues(values))
         return [p[0], self._makereturn(p[1])]
+
+    def push_ni(self, member, score):
+        """ Push only if the member not inside the queue
+        """
+        script = load('of_capped_priority_queue_push_not_in')
+        rs = self._run_lua_script(script, (self._key,), (self._cap, score, member))
+        return [rs[0], self._makereturn(rs[1]), bool(rs[2])] if isinstance(rs, list) else rs
+

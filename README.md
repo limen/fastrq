@@ -11,7 +11,8 @@
 + Abstract Priority Queue, Capped Priority Queue and Overflow-able Capped Priority Queue
 + Push and Pop support batch operation
 + Using Lua scripts to save RTT (Round Trip Time)
-+ All data types support to find indexes of members 
++ Support getting indexes of members 
++ Support pushing only if a member not inside the queue 
 
 ## Data types
 
@@ -105,6 +106,7 @@ from fastrq.priorityqueue import PriorityQueue
 q = Queue("fastrq_queue")
 q.push(1)
 q.push([2, 3])
+q.push_ni(1) # got [3, False]
 q.ttl(10)   # set the lifetime in seconds
 q.range(0, -1)  # got ['1', '2', '3']
 q.range(0, 1)  # got ['1', '2']
@@ -112,6 +114,8 @@ q.indexofone(1); # got 0
 q.indexofone(2); # got 1 
 q.indexofone(4); # got None
 q.indexofmany([1, 2, 4]); # got {1: 0, 2: 1, 4: None}
+# push only if the member not inside the queue
+q.push_ni(4) # got [4, True]
 q.pop()
 q.pop(2)
 q.destruct() # destruct the queue
@@ -132,6 +136,8 @@ dq.push_front([1, 2])
 dq.push_back([3, 4])
 dq.pop_front()
 dq.pop_back()
+dq.push_front_ni(3)
+dq.push_back_ni(5)
 
 # priority queue
 pq = PriorityQueue("fastrq_priority_queue")
@@ -142,6 +148,8 @@ pq.indexofone('alibaba'); # got 1
 pq.indexofone('baidu'); # got None
 pq.pop()
 pq.pop(2)
+pq.push_ni('ibm', 4)
+pq.push_ni('amazon', 5)
 
 # stack
 s = Stack("fastrq_stack")
@@ -150,5 +158,6 @@ s.indexofone(1); # got 2
 s.indexofone(2); # got 1
 s.indexofone(3); # got 0
 s.pop()
+s.push_ni(4)
 
 ```

@@ -26,6 +26,12 @@ class TestQueue(unittest.TestCase):
         self.assertEqual(head3, ['2', '3', '4'])
         self.assertEqual(self.queue.pop(), '5')
         self.assertEqual(self.queue.pop(), None)
+
+    def test_push_ni(self):
+        self.assertEqual(self.queue.push_ni(1), [1, True])
+        self.assertEqual(self.queue.push_ni(1), [1, False])
+        self.assertEqual(self.queue.push_ni('apple'), [2, True])
+        self.assertEqual(self.queue.push_ni('apple'), [2, False])
     
     def test_range(self):
         self.queue.push((1, 2, 3, 4))
@@ -62,6 +68,11 @@ class TestCappedQueue(unittest.TestCase):
     def test_push(self):
         self.assertEqual(self.queue.push((1, 2, 3)), 3)
         self.assertEqual(self.queue.push(4), 'err_qf')
+    
+    def test_push_ni(self):
+        self.assertEqual(self.queue.push((1, 2, 3)), 3)
+        self.assertEqual(self.queue.push_ni(1), 'err_qf')
+        self.assertEqual(self.queue.push_ni('apple'), 'err_qf')
 
 
 class TestOfCappedQueue(unittest.TestCase):
@@ -76,3 +87,9 @@ class TestOfCappedQueue(unittest.TestCase):
         self.assertEqual(self.queue.push((1, 2, 3)), [3, []])
         self.assertEqual(self.queue.push(4), [3, ['1']])
         self.assertEqual(self.queue.range(0, -1), ['2', '3', '4'])
+
+    def test_push_ni(self):
+        self.assertEqual(self.queue.push((1, 2, 3)), [3, []])
+        self.assertEqual(self.queue.push_ni(1), [3, [], False])
+        self.assertEqual(self.queue.push_ni('apple'), [3, ['1'], True])
+

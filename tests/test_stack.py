@@ -18,6 +18,13 @@ class TestStack(unittest.TestCase):
         self.assertEqual(self.queue.pop(2), ['2', '1'])
         self.assertEqual(self.queue.pop(), None)
 
+    def test_push_ni(self):
+        self.assertEqual(self.queue.push_ni(1), [1, True])
+        self.assertEqual(self.queue.push_ni('apple'), [2, True])
+        self.assertEqual(self.queue.push_ni(1), [2, False])
+        self.assertEqual(self.queue.push_ni('apple'), [2, False])
+
+
     def test_indexof(self):
         self.queue.push(['apple', 'banana'])
         self.assertEqual(self.queue.indexofone('banana'), 0)
@@ -36,3 +43,11 @@ class TestCappedStack(TestStack):
         self.assertEqual(self.queue.push([3, 4]), 'err_qof')
         self.assertEqual(self.queue.push(3), 3)
         self.assertEqual(self.queue.push(4), 'err_qf')
+
+    def test_push_ni(self):
+        self.assertEqual(self.queue.push_ni(1), [1, True])
+        self.assertEqual(self.queue.push_ni(1), [1, False])
+        self.assertEqual(self.queue.push_ni(2), [2, True])
+        self.assertEqual(self.queue.push_ni(3), [3, True])
+        self.assertEqual(self.queue.push_ni(4), 'err_qf')
+
