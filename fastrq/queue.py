@@ -7,7 +7,7 @@ from .loader import load
 class Queue(Base):
     def __len__(self):
         return self.connect().llen(self._key)
-    
+
     def push(self, values):
         script = load('queue_push')
         return self._run_lua_script(script, [self._key], self._makevalues(values))
@@ -22,6 +22,19 @@ class Queue(Base):
     
     def range(self, start, end):
         return self.connect().lrange(self._key, start, end)
+
+    def indexofone(self, member):
+        script = load('queue_indexof')
+        r = self._run_lua_script(script, [self._key], [member])
+        return None if r[0] == -1 else r[0]
+
+    def indexofmany(self, members):
+        script = load('queue_indexof')
+        indexes = {}
+        r = self._run_lua_script(script, [self._key], members)
+        for i, m in enumerate(members):
+            indexes[m] = None if r[i] == -1 else r[i]
+        return indexes
     
 
 class CappedQueue(Queue):

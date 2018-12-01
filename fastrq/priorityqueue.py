@@ -20,6 +20,19 @@ class PriorityQueue(Base):
     
     def range(self, low_score='-inf', high_score='+inf'):
         return self.connect().zrangebyscore(self._key, low_score, high_score, None, None, True, int)
+
+    def indexofone(self, member):
+        script = load('priority_queue_indexof')
+        r = self._run_lua_script(script, [self._key], [member])
+        return None if r[0] == -1 else r[0]
+
+    def indexofmany(self, members):
+        script = load('priority_queue_indexof')
+        indexes = {}
+        r = self._run_lua_script(script, [self._key], members)
+        for i, m in enumerate(members):
+            indexes[m] = None if r[i] == -1 else r[i]
+        return indexes
     
     def _makevalues(self, values):
         vl = []

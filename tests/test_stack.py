@@ -18,6 +18,13 @@ class TestStack(unittest.TestCase):
         self.assertEqual(self.queue.pop(2), ['2', '1'])
         self.assertEqual(self.queue.pop(), None)
 
+    def test_indexof(self):
+        self.queue.push(['apple', 'banana'])
+        self.assertEqual(self.queue.indexofone('banana'), 0)
+        self.assertEqual(self.queue.indexofone('apple'), 1)
+        self.assertEqual(self.queue.indexofone('pear'), None)
+        self.assertEqual(self.queue.indexofmany(['apple', 'banana', 'pear']), {'apple': 1, 'banana': 0, 'pear': None})
+
 
 class TestCappedStack(TestStack):
     def setUp(self):

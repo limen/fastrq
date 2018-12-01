@@ -43,6 +43,13 @@ class TestQueue(unittest.TestCase):
         time.sleep(11)
         self.assertEqual(self.queue.ttl(), -2)
 
+    def test_indexof(self):
+        self.queue.push((1, 2))
+        self.assertEqual(self.queue.indexofone(1), 0)
+        self.assertEqual(self.queue.indexofone(2), 1)
+        self.assertEqual(self.queue.indexofone(3), None)
+        self.assertEqual(self.queue.indexofmany([1,2,3]), {1: 0, 2: 1, 3: None})
+
 
 class TestCappedQueue(unittest.TestCase):
     def setUp(self):

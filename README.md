@@ -11,6 +11,7 @@
 + Abstract Priority Queue, Capped Priority Queue and Overflow-able Capped Priority Queue
 + Push and Pop support batch operation
 + Using Lua scripts to save RTT (Round Trip Time)
++ All data types support to find indexes of members 
 
 ## Data types
 
@@ -107,6 +108,10 @@ q.push([2, 3])
 q.ttl(10)   # set the lifetime in seconds
 q.range(0, -1)  # got ['1', '2', '3']
 q.range(0, 1)  # got ['1', '2']
+q.indexofone(1); # got 0
+q.indexofone(2); # got 1 
+q.indexofone(4); # got None
+q.indexofmany([1, 2, 4]); # got {1: 0, 2: 1, 4: None}
 q.pop()
 q.pop(2)
 q.destruct() # destruct the queue
@@ -131,13 +136,19 @@ dq.pop_back()
 # priority queue
 pq = PriorityQueue("fastrq_priority_queue")
 pq.push({'alibaba': 1})
-pq.push({'google': 0, 'microsoft': 1})
+pq.push({'google': 0, 'microsoft': 2})
+pq.indexofone('google'); # got 0
+pq.indexofone('alibaba'); # got 1
+pq.indexofone('baidu'); # got None
 pq.pop()
 pq.pop(2)
 
 # stack
 s = Stack("fastrq_stack")
 s.push([1,2,3])
+s.indexofone(1); # got 2
+s.indexofone(2); # got 1
+s.indexofone(3); # got 0
 s.pop()
 
 ```

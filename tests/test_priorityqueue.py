@@ -34,6 +34,20 @@ class TestPriorityQueue(unittest.TestCase):
         self.assertEqual(self.queue.range(), [('alice', 1), ('bob', 2), ('cath', 3)])
         self.assertEqual(self.queue.range(1, 2), [('alice', 1), ('bob', 2)])
 
+    def test_indexof(self):
+        values = {
+            "alice": 1,
+            "bob": 2,
+            "cath": 3,
+        }
+        self.queue.push(values)
+        self.assertEqual(self.queue.indexofone('alice'), 0)
+        self.assertEqual(self.queue.indexofone('bob'), 1)
+        self.assertEqual(self.queue.indexofone('cath'), 2)
+        self.assertEqual(self.queue.indexofone('dick'), None)
+        self.assertEqual(self.queue.indexofmany(['alice', 'bob', 'dick']), {'alice': 0, 'bob': 1, 'dick': None})
+
+
 
 class TestCappedPriorityQueue(TestPriorityQueue):
     def setUp(self):

@@ -19,6 +19,19 @@ class Stack(Base):
             return [x for x in p if x is not None]
         else:
             return p[0] if len(p) > 0 else None
+
+    def indexofone(self, member):
+        script = load('stack_indexof')
+        r = self._run_lua_script(script, [self._key], [member])
+        return None if r[0] == -1 else r[0]
+
+    def indexofmany(self, members):
+        script = load('stack_indexof')
+        indexes = {}
+        r = self._run_lua_script(script, [self._key], members)
+        for i, m in enumerate(members):
+            indexes[m] = None if r[i] == -1 else r[i]
+        return indexes
     
     
 class CappedStack(Stack):

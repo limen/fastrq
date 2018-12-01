@@ -169,6 +169,37 @@ end
 return {c,o}
 """
 
+_scripts['queue_indexof'] = """
+local o={}
+local len=redis.call('llen',KEYS[1])
+for i=1,#ARGV do
+    o[i]=-1
+    local j=0
+    local indv
+    while j<len and indv~=ARGV[i] do
+        indv=redis.call('lindex',KEYS[1],j)
+        if indv==ARGV[i] then
+            o[i]=j
+        end
+        j=j+1
+    end
+end
+return o
+"""
+
+_scripts['priority_queue_indexof'] = """
+local o={}
+for i=1,#ARGV do
+    local r=redis.call('zrank',KEYS[1],ARGV[i])
+    if r~=nil then
+        o[i]=r
+    else
+        o[i]=-1
+    end
+end
+return o
+"""
+
 _map = {
     # queue
     'queue_push': 'queue_push',
@@ -177,6 +208,8 @@ _map = {
     'capped_queue_pop': 'queue_pop',
     'of_capped_queue_push': 'of_capped_queue_push',
     'of_capped_queue_pop': 'queue_pop',
+    'queue_indexof': 'queue_indexof',
+    'capped_queue_indexof': 'queue_indexof',
     # deque
     'deque_push_back': 'queue_push',
     'deque_push_front': 'deque_push_front',
@@ -188,17 +221,22 @@ _map = {
     'of_capped_deque_push_back': 'of_capped_queue_push',
     'of_capped_deque_pop_front': 'queue_pop',
     'of_capped_deque_pop_back': 'deque_pop_back',
+    'deque_indexof': 'queue_indexof',
+    'capped_deque_indexof': 'queue_indexof',
     # stack
     'stack_push': 'stack_push',
     'stack_pop': 'stack_pop',
     'capped_stack_push': 'capped_stack_push',
     'capped_stack_pop': 'stack_pop',
+    'stack_indexof': 'queue_indexof',
     # priority queue
     'priority_queue_push': 'priority_queue_push',
     'priority_queue_pop': 'priority_queue_pop',
     'capped_priority_queue_push': 'capped_priority_queue_push',
     'capped_priority_queue_pop': 'priority_queue_pop',
     'of_capped_priority_queue_push': 'of_capped_priority_queue_push',
+    'priority_queue_indexof': 'priority_queue_indexof',
+    'capped_priority_queue_indexof': 'priority_queue_indexof',
 }
 
 def load(command):
