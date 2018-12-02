@@ -1,4 +1,5 @@
 _scripts = {}
+
 _scripts['queue_push'] = """
 local len
 for i,k in ipairs(ARGV) do
@@ -442,6 +443,7 @@ _map = {
     'capped_queue_indexof': 'queue_indexof',
     # deque
     'deque_push_back': 'queue_push',
+    'deque_push_back_not_in': 'queue_push_not_in',
     'deque_push_front': 'deque_push_front',
     'deque_push_front_not_in': 'deque_push_front_not_in',
     'deque_pop_back': 'deque_pop_back',
