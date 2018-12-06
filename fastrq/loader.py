@@ -296,14 +296,8 @@ return redis.call('zcard',KEYS[1])
 """
 
 _scripts['priority_queue_push_not_in'] = """
+local y=redis.call('zadd',KEYS[1],'NX',ARGV[1],ARGV[2])
 local len=redis.call('zcard',KEYS[1])
-local y=0
-local rank=redis.call('zrank',KEYS[1],ARGV[2])
-if not rank then
-  redis.call('zadd',KEYS[1],ARGV[1],ARGV[2])
-  len=redis.call('zcard',KEYS[1])
-  y=1
-end
 return {len,y}
 """
 
@@ -341,11 +335,7 @@ if len >= cap then
 elseif len + (#ARGV - 1) / 2 > cap then
   return 'err_qof'
 end
-local y=0
-if not redis.call('zrank',KEYS[1],ARGV[3]) then
-  redis.call('zadd',KEYS[1],ARGV[2],ARGV[3])
-  y=1
-end
+local y=redis.call('zadd',KEYS[1],'NX',ARGV[2],ARGV[3])
 return {redis.call('zcard',KEYS[1]),y}
 """
 
