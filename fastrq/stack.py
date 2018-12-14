@@ -11,6 +11,16 @@ class Stack(Base):
     def push(self, values):
         script = load('stack_push')
         return self._run_lua_script(script, (self._key,), self._makevalues(values))
+    
+    def push_ne(self, values):
+        script = load('stack_push_ne')
+        rt = self._run_lua_script(script, (self._key,), self._makevalues(values))
+        return False if rt == 'err_ae' else rt
+    
+    def push_ae(self, values):
+        script = load('stack_push_ae')
+        rt = self._run_lua_script(script, (self._key,), self._makevalues(values))
+        return False if rt == 'err_ne' else rt
 
     def push_ni(self, member):
         """ Push only if the member not inside the stack
@@ -49,6 +59,16 @@ class CappedStack(Stack):
     def push(self, values):
         script = load('capped_stack_push')
         return self._run_lua_script(script, (self._key,), (self._cap,) + self._makevalues(values))
+    
+    def push_ne(self, values):
+        script = load('capped_stack_push_ne')
+        rt = self._run_lua_script(script, (self._key,), (self._cap,) + self._makevalues(values))
+        return False if rt == 'err_ae' else rt
+    
+    def push_ae(self, values):
+        script = load('capped_stack_push_ae')
+        rt = self._run_lua_script(script, (self._key,), (self._cap,) + self._makevalues(values))
+        return False if rt == 'err_ne' else rt
 
     def push_ni(self, member):
         """ Push only if the member not inside the stack

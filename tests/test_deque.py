@@ -27,6 +27,14 @@ class TestDeque(unittest.TestCase):
         self.assertEqual(self.queue.pop_back(3), ['2', '3', '4'])
         self.assertEqual(self.queue.pop_back(), None)
 
+    def test_push_e(self):
+        self.assertEqual(self.queue.push_front_ne(1), 1)
+        self.assertFalse(self.queue.push_back_ne(1))
+        self.queue.destruct()
+        self.assertFalse(self.queue.push_front_ae(1))
+        self.queue.push_front(1)
+        self.assertEqual(self.queue.push_front_ae(1), 2)
+
     def test_push_ni(self):
         self.assertEqual(self.queue.push_back_ni(1), [1, True])
         self.assertEqual(self.queue.push_back_ni(2), [2, True])
@@ -67,6 +75,14 @@ class TestCappedDeque(unittest.TestCase):
         self.assertEqual(self.queue.range(0, -1), ['3', '1', '2'])
         self.assertEqual(self.queue.push_back(4), 'err_qf')
 
+    def test_push_e(self):
+        self.assertEqual(self.queue.push_front_ne(1), 1)
+        self.assertFalse(self.queue.push_back_ne(1))
+        self.queue.destruct()
+        self.assertFalse(self.queue.push_front_ae(1))
+        self.queue.push_front(1)
+        self.assertEqual(self.queue.push_front_ae(1), 2)
+
     def test_push_ni(self):
         self.assertEqual(self.queue.push_back_ni(1), [1, True])
         self.assertEqual(self.queue.push_back_ni(1), [1, False])
@@ -93,6 +109,14 @@ class TestOfCappedDeque(unittest.TestCase):
         self.assertEqual(self.queue.push_back(4), [3, ['3']])
         self.assertEqual(self.queue.pop_front(), '1')
         self.assertEqual(self.queue.pop_back(), '4')
+
+    def test_push_e(self):
+        self.assertEqual(self.queue.push_front_ne(1), [1, []])
+        self.assertFalse(self.queue.push_back_ne(1))
+        self.queue.destruct()
+        self.assertFalse(self.queue.push_front_ae(1))
+        self.queue.push_front(1)
+        self.assertEqual(self.queue.push_front_ae(1), [2, []])
 
     def test_push_ni(self):
         self.assertEqual(self.queue.push_back_ni('apple'), [1, [], True])

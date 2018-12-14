@@ -459,6 +459,8 @@ _map = {
     'deque_pop_back': 'deque_pop_back',
     'deque_pop_front': 'queue_pop',
     'capped_deque_push_front': 'capped_deque_push_front',
+    'capped_deque_push_front_ne': ['not_exist', 'capped_deque_push_front'],
+    'capped_deque_push_front_ae': ['exists', 'capped_deque_push_front'],
     'capped_deque_push_front_not_in': 'capped_deque_push_front_not_in',
     'capped_deque_push_back': 'capped_queue_push',
     'capped_deque_push_back_ne': 'capped_queue_push_ne',

@@ -16,6 +16,26 @@ class Deque(Base):
         script = load('deque_push_back')
         return self._run_lua_script(script, [self._key], self._makevalues(values))
 
+    def push_front_ne(self, values):
+        script = load('deque_push_front_ne')
+        rt = self._run_lua_script(script, [self._key], self._makevalues(values))
+        return False if rt == 'err_ae' else rt
+    
+    def push_back_ne(self, values):
+        script = load('deque_push_back_ne')
+        rt = self._run_lua_script(script, [self._key], self._makevalues(values))
+        return False if rt == 'err_ae' else rt
+
+    def push_front_ae(self, values):
+        script = load('deque_push_front_ae')
+        rt = self._run_lua_script(script, [self._key], self._makevalues(values))
+        return False if rt == 'err_ne' else rt
+    
+    def push_back_ae(self, values):
+        script = load('deque_push_back_ae')
+        rt = self._run_lua_script(script, [self._key], self._makevalues(values))
+        return False if rt == 'err_ne' else rt
+
     def push_front_ni(self, member):
         script = load('deque_push_front_not_in')
         r = self._run_lua_script(script, [self._key], [member])
@@ -71,6 +91,26 @@ class CappedDeque(Deque):
     def push_back(self, values):
         script = load('capped_deque_push_back')
         return self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
+        
+    def push_front_ne(self, values):
+        script = load('capped_deque_push_front_ne')
+        rt = self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
+        return False if rt == 'err_ae' else rt
+    
+    def push_back_ne(self, values):
+        script = load('capped_deque_push_back_ne')
+        rt = self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
+        return False if rt == 'err_ae' else rt
+        
+    def push_front_ae(self, values):
+        script = load('capped_deque_push_front_ae')
+        rt = self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
+        return False if rt == 'err_ne' else rt
+    
+    def push_back_ae(self, values):
+        script = load('capped_deque_push_back_ae')
+        rt = self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
+        return False if rt == 'err_ne' else rt
 
     def push_front_ni(self, member):
         script = load('capped_deque_push_front_not_in')
@@ -91,6 +131,26 @@ class OfCappedDeque(CappedDeque):
     def push_back(self, values):
         script = load('of_capped_deque_push_back')
         return self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
+
+    def push_front_ne(self, values):
+        script = load('of_capped_deque_push_front_ne')
+        rt = self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
+        return False if rt == 'err_ae' else rt
+    
+    def push_back_ne(self, values):
+        script = load('of_capped_deque_push_back_ne')
+        rt = self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
+        return False if rt == 'err_ae' else rt
+
+    def push_front_ae(self, values):
+        script = load('of_capped_deque_push_front_ae')
+        rt = self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
+        return False if rt == 'err_ne' else rt
+    
+    def push_back_ae(self, values):
+        script = load('of_capped_deque_push_back_ae')
+        rt = self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
+        return False if rt == 'err_ne' else rt
 
     def push_front_ni(self, member):
         script = load('of_capped_deque_push_front_not_in')

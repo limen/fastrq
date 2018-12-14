@@ -24,6 +24,14 @@ class TestPriorityQueue(unittest.TestCase):
         self.assertEqual(self.queue.pop(), None)
         self.assertEqual(self.queue.pop(2), [])
 
+    def test_push_e(self):
+        self.assertFalse(self.queue.push_ae({'alice': 1}))
+        self.queue.push({'alice': 1})
+        self.assertEqual(self.queue.push_ae({'bob': 2}), 2)
+        self.assertFalse(self.queue.push_ne({'alice': 1}))
+        self.queue.destruct()
+        self.assertEqual(self.queue.push_ne({'alice': 1}), 1)
+
     def test_push_ni(self):
         self.assertEqual(self.queue.push_ni('alice', 1), [1, True]);
         self.assertEqual(self.queue.push_ni('bob', 2), [2, True]);
@@ -70,6 +78,14 @@ class TestCappedPriorityQueue(TestPriorityQueue):
         self.assertEqual(self.queue.push({'cath': 3}), 3)
         self.assertEqual(self.queue.push({'cath': 3, 'dylon': 4}), 'err_qf')
 
+    def test_push_e(self):
+        self.assertFalse(self.queue.push_ae({'alice': 1}))
+        self.queue.push({'alice': 1})
+        self.assertEqual(self.queue.push_ae({'bob': 2}), 2)
+        self.assertFalse(self.queue.push_ne({'alice': 1}))
+        self.queue.destruct()
+        self.assertEqual(self.queue.push_ne({'alice': 1}), 1)
+
     def test_push_ni(self):
         self.assertEqual(self.queue.push_ni('alice', 1), [1, True]);
         self.assertEqual(self.queue.push_ni('bob', 2), [2, True]);
@@ -93,6 +109,12 @@ class TestOfCappedPriorityQueue(TestCappedPriorityQueue):
         self.assertEqual(p, [2, []])
         self.assertEqual(self.queue.push({'alice': 1, 'bob': 2}), [3, [('dylon', 4)]])
         self.assertEqual(self.queue.push({'cathe': 0}), [3, [('cath', 3)]])
+
+    def test_push_e(self):
+        self.assertFalse(self.queue.push_ae({'alice': 1}))
+        self.queue.push({'alice': 1})
+        self.assertEqual(self.queue.push_ae({'bob': 2}), [2, []])
+        self.assertFalse(self.queue.push_ne({'alice': 1}))
 
     def test_push_ni(self):
         self.assertEqual(self.queue.push_ni('alice', 1), [1, [], True]);

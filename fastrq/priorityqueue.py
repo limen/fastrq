@@ -12,6 +12,16 @@ class PriorityQueue(Base):
         script = load('priority_queue_push')
         return self._run_lua_script(script, (self._key,), self._makevalues(values))
     
+    def push_ne(self, values):
+        script = load('priority_queue_push_ne')
+        rt = self._run_lua_script(script, (self._key,), self._makevalues(values))
+        return False if rt == 'err_ae' else rt
+    
+    def push_ae(self, values):
+        script = load('priority_queue_push_ae')
+        rt = self._run_lua_script(script, (self._key,), self._makevalues(values))
+        return False if rt == 'err_ne' else rt
+    
     def push_ni(self, member, score):
         """ Push only if the member not inside the queue
         """
@@ -67,6 +77,16 @@ class CappedPriorityQueue(PriorityQueue):
         script = load('capped_priority_queue_push')
         return self._run_lua_script(script, (self._key,), [self._cap] + self._makevalues(values))
     
+    def push_ne(self, values):
+        script = load('capped_priority_queue_push_ne')
+        rt = self._run_lua_script(script, (self._key,), [self._cap] + self._makevalues(values))
+        return False if rt == 'err_ae' else rt
+    
+    def push_ae(self, values):
+        script = load('capped_priority_queue_push_ae')
+        rt = self._run_lua_script(script, (self._key,), [self._cap] + self._makevalues(values))
+        return False if rt == 'err_ne' else rt
+    
     def push_ni(self, member, score):
         """ Push only if the member not inside the queue
         """
@@ -80,6 +100,16 @@ class OfCappedPriorityQueue(CappedPriorityQueue):
         script = load('of_capped_priority_queue_push')
         p = self._run_lua_script(script, (self._key,), [self._cap] + self._makevalues(values))
         return [p[0], self._makereturn(p[1])]
+
+    def push_ne(self, values):
+        script = load('of_capped_priority_queue_push_ne')
+        p = self._run_lua_script(script, (self._key,), [self._cap] + self._makevalues(values))
+        return False if p == 'err_ae' else [p[0], self._makereturn(p[1])]
+
+    def push_ae(self, values):
+        script = load('of_capped_priority_queue_push_ae')
+        p = self._run_lua_script(script, (self._key,), [self._cap] + self._makevalues(values))
+        return False if p == 'err_ne' else [p[0], self._makereturn(p[1])]
 
     def push_ni(self, member, score):
         """ Push only if the member not inside the queue
