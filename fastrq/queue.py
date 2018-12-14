@@ -26,6 +26,20 @@ class Queue(Base):
         script = load('queue_push_not_in')
         rs = self._run_lua_script(script, [self._key], [member])
         return [rs[0], bool(rs[1])] if isinstance(rs, list) else rs
+
+    def push_ne(self, values):
+        """ Push only if the queue not already exist
+        """
+        script = load('queue_push_ne')
+        rt = self._run_lua_script(script, [self._key], self._makevalues(values))
+        return False if rt == 'err_ae' else rt
+
+    def push_ae(self, values):
+        """ Push only if the queue already exists
+        """
+        script = load('queue_push_ae')
+        rt = self._run_lua_script(script, [self._key], self._makevalues(values))
+        return False if rt == 'err_ne' else rt
     
     def range(self, start, end):
         return self.connect().lrange(self._key, start, end)
@@ -52,6 +66,16 @@ class CappedQueue(Queue):
     def push(self, values):
         script = load('capped_queue_push')
         return self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
+    
+    def push_ne(self, values):
+        script = load('capped_queue_push_ne')
+        rt = self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
+        return False if rt == 'err_ae' else rt
+    
+    def push_ae(self, values):
+        script = load('capped_queue_push_ae')
+        rt = self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
+        return False if rt == 'err_ne' else rt
 
     def push_ni(self, member):
         """ Push only if the member not inside the queue
@@ -66,6 +90,16 @@ class OfCappedQueue(CappedQueue):
     def push(self, values):
         script = load('of_capped_queue_push')
         return self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
+
+    def push_ne(self, values):
+        script = load('of_capped_queue_push_ne')
+        rt = self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
+        return False if rt == 'err_ae' else rt
+
+    def push_ae(self, values):
+        script = load('of_capped_queue_push_ae')
+        rt = self._run_lua_script(script, [self._key], (self._cap,) + self._makevalues(values))
+        return False if rt == 'err_ne' else rt
 
     def push_ni(self, member):
         """ Push only if the member not inside the queue

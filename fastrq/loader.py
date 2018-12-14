@@ -1,5 +1,15 @@
 _scripts = {}
 
+_scripts['not_exist'] = """
+if redis.call('exists',KEYS[1])==1 then
+  return 'err_ae'
+end""" 
+
+_scripts['exists'] = """
+if redis.call('exists',KEYS[1])~=1 then
+  return 'err_ne'
+end""" 
+
 _scripts['queue_push'] = """
 local len
 for i,k in ipairs(ARGV) do
@@ -422,29 +432,45 @@ _map = {
     # queue
     'queue_push': 'queue_push',
     'queue_push_not_in': 'queue_push_not_in',
+    'queue_push_ne': ['not_exist', 'queue_push'],
+    'queue_push_ae': ['exists', 'queue_push'],
     'queue_pop': 'queue_pop',
     'capped_queue_push': 'capped_queue_push',
+    'capped_queue_push_ne': ['not_exist', 'capped_queue_push'],
+    'capped_queue_push_ae': ['exists', 'capped_queue_push'],
     'capped_queue_push_not_in': 'capped_queue_push_not_in',
     'capped_queue_pop': 'queue_pop',
     'of_capped_queue_push': 'of_capped_queue_push',
+    'of_capped_queue_push_ne': ['not_exist', 'of_capped_queue_push'],
+    'of_capped_queue_push_ae': ['exists', 'of_capped_queue_push'],
     'of_capped_queue_push_not_in': 'of_capped_queue_push_not_in',
     'of_capped_queue_pop': 'queue_pop',
     'queue_indexof': 'queue_indexof',
     'capped_queue_indexof': 'queue_indexof',
     # deque
     'deque_push_back': 'queue_push',
+    'deque_push_back_ne': 'queue_push_ne',
+    'deque_push_back_ae': 'queue_push_ae',
     'deque_push_back_not_in': 'queue_push_not_in',
     'deque_push_front': 'deque_push_front',
+    'deque_push_front_ne': ['not_exist', 'deque_push_front'],
+    'deque_push_front_ae': ['exists', 'deque_push_front'],
     'deque_push_front_not_in': 'deque_push_front_not_in',
     'deque_pop_back': 'deque_pop_back',
     'deque_pop_front': 'queue_pop',
     'capped_deque_push_front': 'capped_deque_push_front',
     'capped_deque_push_front_not_in': 'capped_deque_push_front_not_in',
     'capped_deque_push_back': 'capped_queue_push',
+    'capped_deque_push_back_ne': 'capped_queue_push_ne',
+    'capped_deque_push_back_ae': 'capped_queue_push_ae',
     'capped_deque_push_back_not_in': 'capped_queue_push_not_in',
     'of_capped_deque_push_front': 'of_capped_deque_push_front',
+    'of_capped_deque_push_front_ne': ['not_exist', 'of_capped_deque_push_front'],
+    'of_capped_deque_push_front_ae': ['exists', 'of_capped_deque_push_front'],
     'of_capped_deque_push_front_not_in': 'of_capped_deque_push_front_not_in',
     'of_capped_deque_push_back': 'of_capped_queue_push',
+    'of_capped_deque_push_back_ne': 'of_capped_queue_push_ne',
+    'of_capped_deque_push_back_ae': 'of_capped_queue_push_ae',
     'of_capped_deque_push_back_not_in': 'of_capped_queue_push_not_in',
     'of_capped_deque_pop_front': 'queue_pop',
     'of_capped_deque_pop_back': 'deque_pop_back',
@@ -452,25 +478,51 @@ _map = {
     'capped_deque_indexof': 'queue_indexof',
     # stack
     'stack_push': 'stack_push',
+    'stack_push_ne': ['not_exist', 'stack_push'],
+    'stack_push_ae': ['exists', 'stack_push'],
     'stack_push_not_in': 'stack_push_not_in',
     'stack_pop': 'stack_pop',
     'capped_stack_push': 'capped_stack_push',
+    'capped_stack_push_ne': ['not_exist', 'capped_stack_push'],
+    'capped_stack_push_ae': ['exists', 'capped_stack_push'],
     'capped_stack_push_not_in': 'capped_stack_push_not_in',
     'capped_stack_pop': 'stack_pop',
     'stack_indexof': 'queue_indexof',
     # priority queue
     'priority_queue_push': 'priority_queue_push',
+    'priority_queue_push_ne': ['not_exist', 'priority_queue_push'],
+    'priority_queue_push_ae': ['exists', 'priority_queue_push'],
     'priority_queue_push_not_in': 'priority_queue_push_not_in',
     'priority_queue_pop': 'priority_queue_pop',
     'capped_priority_queue_push': 'capped_priority_queue_push',
+    'capped_priority_queue_push_ne': ['not_exist', 'capped_priority_queue_push'],
+    'capped_priority_queue_push_ae': ['exists', 'capped_priority_queue_push'],
     'capped_priority_queue_push_not_in': 'capped_priority_queue_push_not_in',
     'capped_priority_queue_pop': 'priority_queue_pop',
     'of_capped_priority_queue_push': 'of_capped_priority_queue_push',
+    'of_capped_priority_queue_push_ne': ['not_exist', 'of_capped_priority_queue_push'],
+    'of_capped_priority_queue_push_ae': ['exists', 'of_capped_priority_queue_push'],
     'of_capped_priority_queue_push_not_in': 'of_capped_priority_queue_push_not_in',
     'priority_queue_indexof': 'priority_queue_indexof',
     'capped_priority_queue_indexof': 'priority_queue_indexof',
 }
 
 def load(command):
-    return _scripts[_map[command]]
+    real = _map[command]
+    script = ''
+    if isinstance(real, list):
+        for s in real:
+            script += _scripts[s]
+        _scripts[command] = script
+        return script
+    elif real in _scripts:
+        return _scripts[real]
+    else:
+        # load recursively
+        return load(real)
 
+
+if __name__ == '__main__':
+    print('capped_deque_push_back_ne', load('capped_deque_push_back_ne'))
+    print('queue_push', load('queue_push'))
+    print('queue_push_ne', load('queue_push_ne'))
