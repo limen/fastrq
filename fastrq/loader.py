@@ -1,4 +1,4 @@
-_scripts = {}
+_scripts = dict()
 
 _scripts['not_exist'] = """
 if redis.call('exists',KEYS[1])==1 then
@@ -509,7 +509,12 @@ _map = {
     'capped_priority_queue_indexof': 'priority_queue_indexof',
 }
 
+
 def load(command):
+    """Load Lua script for the command.
+    
+    The load may be recursive to reuse some scripts.
+    """
     real = _map[command]
     script = ''
     if isinstance(real, list):
@@ -522,9 +527,3 @@ def load(command):
     else:
         # load recursively
         return load(real)
-
-
-if __name__ == '__main__':
-    print('capped_deque_push_back_ne', load('capped_deque_push_back_ne'))
-    print('queue_push', load('queue_push'))
-    print('queue_push_ne', load('queue_push_ne'))

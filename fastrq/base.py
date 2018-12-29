@@ -1,4 +1,8 @@
+from __future__ import absolute_import
+
 from redis import StrictRedis
+
+from . import loader
 
 
 class Base(object):
@@ -8,6 +12,9 @@ class Base(object):
         
     def __len__(self):
         return None
+
+    def load_script(self, command):
+        return loader.load(command)
         
     def connect(self):
         if self._redis is None:
@@ -44,10 +51,8 @@ class Base(object):
     def destruct(self):
         return self.connect().delete(self._key)
 
-    def _makevalues(self, values):
-        if isinstance(values, tuple) or isinstance(values, list):
-            return tuple(values)
-        return values,
+    def _make_members(self, members):
+        return members if isinstance(members, list) else [members]
 
     def _run_lua_script(self, script, keys=(), args=()):
         func = self.connect().register_script(script)

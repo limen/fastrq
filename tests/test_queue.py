@@ -13,7 +13,7 @@ class TestQueue(unittest.TestCase):
         self.queue.destruct()
     
     def test_push_pop(self):
-        ql = self.queue.push((1, 2))
+        ql = self.queue.push([1, 2])
         self.assertEqual(ql, 2)
         self.assertEqual(self.queue.length(), 2)
         head = self.queue.pop()
@@ -21,17 +21,17 @@ class TestQueue(unittest.TestCase):
         self.assertEqual(self.queue.length(), 1)
         self.assertEqual(len(self.queue), 1)
         
-        self.queue.push((3, 4, 5))
+        self.queue.push([3, 4, 5])
         head3 = self.queue.pop(3)
         self.assertEqual(head3, ['2', '3', '4'])
         self.assertEqual(self.queue.pop(), '5')
         self.assertEqual(self.queue.pop(), None)
 
     def test_push_ni(self):
-        self.assertEqual(self.queue.push_ni(1), [1, True])
-        self.assertEqual(self.queue.push_ni(1), [1, False])
-        self.assertEqual(self.queue.push_ni('apple'), [2, True])
-        self.assertEqual(self.queue.push_ni('apple'), [2, False])
+        self.assertEqual(self.queue.push_ni(1), (1, True))
+        self.assertEqual(self.queue.push_ni(1), (1, False))
+        self.assertEqual(self.queue.push_ni('apple'), (2, True))
+        self.assertEqual(self.queue.push_ni('apple'), (2, False))
 
     def test_push_ae(self):
         self.assertFalse(self.queue.push_ae(1))
@@ -43,7 +43,7 @@ class TestQueue(unittest.TestCase):
         self.assertFalse(self.queue.push_ne(1))
     
     def test_range(self):
-        self.queue.push((1, 2, 3, 4))
+        self.queue.push([1, 2, 3, 4])
         self.assertEqual(self.queue.range(0, -1), ['1', '2', '3', '4'])
         self.assertEqual(self.queue.range(0, 2), ['1', '2', '3'])
         self.assertEqual(self.queue.range(0, 0), ['1'])
@@ -51,7 +51,7 @@ class TestQueue(unittest.TestCase):
         self.assertEqual(self.queue.range(0, -1), [])
     
     def test_expire(self):
-        self.queue.push((1, 2))
+        self.queue.push([1, 2])
         self.assertEqual(self.queue.ttl(), -1)
         self.queue.expire(10)
         self.assertEqual(self.queue.ttl(), 10)
@@ -59,11 +59,11 @@ class TestQueue(unittest.TestCase):
         self.assertEqual(self.queue.ttl(), -2)
 
     def test_indexof(self):
-        self.queue.push((1, 2))
-        self.assertEqual(self.queue.indexofone(1), 0)
-        self.assertEqual(self.queue.indexofone(2), 1)
-        self.assertEqual(self.queue.indexofone(3), None)
-        self.assertEqual(self.queue.indexofmany([1,2,3]), {1: 0, 2: 1, 3: None})
+        self.queue.push([1, 2])
+        self.assertEqual(self.queue.indexof_one(1), 0)
+        self.assertEqual(self.queue.indexof_one(2), 1)
+        self.assertEqual(self.queue.indexof_one(3), None)
+        self.assertEqual(self.queue.indexof_many([1, 2, 3]), {1: 0, 2: 1, 3: None})
 
 
 class TestCappedQueue(unittest.TestCase):
@@ -75,7 +75,7 @@ class TestCappedQueue(unittest.TestCase):
         self.queue.destruct()
     
     def test_push(self):
-        self.assertEqual(self.queue.push((1, 2, 3)), 3)
+        self.assertEqual(self.queue.push([1, 2, 3]), 3)
         self.assertEqual(self.queue.push(4), 'err_qf')
 
     def test_push_ae(self):
@@ -88,7 +88,7 @@ class TestCappedQueue(unittest.TestCase):
         self.assertFalse(self.queue.push_ne(1))
     
     def test_push_ni(self):
-        self.assertEqual(self.queue.push((1, 2, 3)), 3)
+        self.assertEqual(self.queue.push([1, 2, 3]), 3)
         self.assertEqual(self.queue.push_ni(1), 'err_qf')
         self.assertEqual(self.queue.push_ni('apple'), 'err_qf')
 
@@ -102,21 +102,21 @@ class TestOfCappedQueue(unittest.TestCase):
         self.queue.destruct()
     
     def test_push(self):
-        self.assertEqual(self.queue.push((1, 2, 3)), [3, []])
-        self.assertEqual(self.queue.push(4), [3, ['1']])
+        self.assertEqual(self.queue.push([1, 2, 3]), (3, []))
+        self.assertEqual(self.queue.push(4), (3, ['1']))
         self.assertEqual(self.queue.range(0, -1), ['2', '3', '4'])
 
     def test_push_ae(self):
         self.assertFalse(self.queue.push_ae(1))
         self.queue.push(1)
-        self.assertEqual(self.queue.push_ae(2), [2, []])
+        self.assertEqual(self.queue.push_ae(2), (2, []))
 
     def test_push_ne(self):
-        self.assertEqual(self.queue.push_ne(1), [1, []])
+        self.assertEqual(self.queue.push_ne(1), (1, []))
         self.assertFalse(self.queue.push_ne(1))
 
     def test_push_ni(self):
-        self.assertEqual(self.queue.push((1, 2, 3)), [3, []])
-        self.assertEqual(self.queue.push_ni(1), [3, [], False])
-        self.assertEqual(self.queue.push_ni('apple'), [3, ['1'], True])
+        self.assertEqual(self.queue.push([1, 2, 3]), (3, []))
+        self.assertEqual(self.queue.push_ni(1), (3, [], False))
+        self.assertEqual(self.queue.push_ni('apple'), (3, ['1'], True))
 

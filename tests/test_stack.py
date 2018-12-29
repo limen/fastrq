@@ -27,18 +27,17 @@ class TestStack(unittest.TestCase):
         self.assertEqual(self.queue.push_ae(1), 2)
 
     def test_push_ni(self):
-        self.assertEqual(self.queue.push_ni(1), [1, True])
-        self.assertEqual(self.queue.push_ni('apple'), [2, True])
-        self.assertEqual(self.queue.push_ni(1), [2, False])
-        self.assertEqual(self.queue.push_ni('apple'), [2, False])
-
+        self.assertEqual(self.queue.push_ni(1), (1, True))
+        self.assertEqual(self.queue.push_ni('apple'), (2, True))
+        self.assertEqual(self.queue.push_ni(1), (2, False))
+        self.assertEqual(self.queue.push_ni('apple'), (2, False))
 
     def test_indexof(self):
         self.queue.push(['apple', 'banana'])
-        self.assertEqual(self.queue.indexofone('banana'), 0)
-        self.assertEqual(self.queue.indexofone('apple'), 1)
-        self.assertEqual(self.queue.indexofone('pear'), None)
-        self.assertEqual(self.queue.indexofmany(['apple', 'banana', 'pear']), {'apple': 1, 'banana': 0, 'pear': None})
+        self.assertEqual(self.queue.indexof_one('banana'), 0)
+        self.assertEqual(self.queue.indexof_one('apple'), 1)
+        self.assertEqual(self.queue.indexof_one('pear'), None)
+        self.assertEqual(self.queue.indexof_many(['apple', 'banana', 'pear']), {'apple': 1, 'banana': 0, 'pear': None})
 
 
 class TestCappedStack(TestStack):
@@ -61,9 +60,9 @@ class TestCappedStack(TestStack):
         self.assertEqual(self.queue.push_ae(1), 2)
 
     def test_push_ni(self):
-        self.assertEqual(self.queue.push_ni(1), [1, True])
-        self.assertEqual(self.queue.push_ni(1), [1, False])
-        self.assertEqual(self.queue.push_ni(2), [2, True])
-        self.assertEqual(self.queue.push_ni(3), [3, True])
+        self.assertEqual(self.queue.push_ni(1), (1, True))
+        self.assertEqual(self.queue.push_ni(1), (1, False))
+        self.assertEqual(self.queue.push_ni(2), (2, True))
+        self.assertEqual(self.queue.push_ni(3), (3, True))
         self.assertEqual(self.queue.push_ni(4), 'err_qf')
 

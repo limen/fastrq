@@ -12,7 +12,8 @@
 + Push and Pop support batch operation
 + Using Lua scripts to save RTT (Round Trip Time)
 + Support getting indexes of members 
-+ Support pushing only if a member not inside the queue 
++ Support pushing only if a member not inside the queue
++ All commands are `atomic`
 
 ## Data types
 
@@ -110,9 +111,9 @@ q.push_ni(1) # got [3, False]
 q.ttl(10)   # set the lifetime in seconds
 q.range(0, -1)  # got ['1', '2', '3']
 q.range(0, 1)  # got ['1', '2']
-q.indexofone(1); # got 0
-q.indexofone(2); # got 1 
-q.indexofone(4); # got None
+q.indexof_one(1); # got 0
+q.indexof_one(2); # got 1
+q.indexof_one(4); # got None
 q.indexofmany([1, 2, 4]); # got {1: 0, 2: 1, 4: None}
 # push only if the member not inside the queue
 q.push_ni(4) # got [4, True]
@@ -143,9 +144,9 @@ dq.push_back_ni(5)
 pq = PriorityQueue("fastrq_priority_queue")
 pq.push({'alibaba': 1})
 pq.push({'google': 0, 'microsoft': 2})
-pq.indexofone('google'); # got 0
-pq.indexofone('alibaba'); # got 1
-pq.indexofone('baidu'); # got None
+pq.indexof_one('google'); # got 0
+pq.indexof_one('alibaba'); # got 1
+pq.indexof_one('baidu'); # got None
 pq.pop()
 pq.pop(2)
 pq.push_ni('ibm', 4)
@@ -154,9 +155,9 @@ pq.push_ni('amazon', 5)
 # stack
 s = Stack("fastrq_stack")
 s.push([1,2,3])
-s.indexofone(1); # got 2
-s.indexofone(2); # got 1
-s.indexofone(3); # got 0
+s.indexof_one(1); # got 2
+s.indexof_one(2); # got 1
+s.indexof_one(3); # got 0
 s.pop()
 s.push_ni(4)
 
