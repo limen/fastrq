@@ -12,87 +12,27 @@
 + Push and Pop support batch operation
 + Using Lua scripts to save RTT (Round Trip Time)
 + Support getting indexes of members 
-+ Support pushing only if a member not inside the queue
-+ All commands are `atomic`
++ Support pushing only if a member not already inside the queue
++ Support pushing only if the queue already exists/not already exist
++ All operations are `atomic`
 
-## Data types
+## Requirements
 
-### Queue
+- Redis >=3.0.2
+- Python 2.7 or >=3.4
 
-+ first in and first out
-+ unlimited capacity
-+ support batch push and batch pop
+## Installation
 
-### Deque
-
-Derive from queue with more features
-
-+ support push front and push back
-+ support pop front and pop back
-
-### Capped Queue/Deque
-
-Derive from queue/deque with more features
-
-+ Have fixed capacity
-+ Push to a full one would fail
-+ Push to one whose positions are not enough would fail
-
-### Overflow-able Capped Queue/Deque
-
-Derive from capped queue/deque with more features
-
-+ The queue length would never exceed its capacity
-+ Push to an end would push out from the other end if one is full
-
-### Stack 
-
-+ Last in and First out
-+ Unlimited capacity
-+ Support batch push and batch pop
-
-### Capped Stack
-
-Derive from Stack with more features
-
-+ Have fixed capacity
-+ Push to a full capped stack would fail
-+ Push to a capped stack whose positions are not enough would fail
-
-### Priority Queue
-
-+ The lower the score, the higher the priority
-+ Unlimited capacity
-+ Support batch push and batch pop
-
-### Capped Priority Queue
-
-Derive from Priority Queue with more features
-
-+ Have fixed capacity
-+ Push to a full one would fail
-+ Push to a capped one whose positions are not enough would fail
-
-### Overflow-able Capped Priority Queue
-
-Derive from Capped Priority Queue with more features
-
-+ The queue length would never exceed its capacity
-+ Push to would push out the lowest priority if queue is full
-
-
-## install
-
-from source
-
-```
-python setup.py install
-```
-
-use pip
+via pip
 
 ```
 pip install fastrq
+```
+
+or from source
+
+```
+python setup.py install
 ```
 
 ## Usage
@@ -107,14 +47,16 @@ from fastrq.priorityqueue import PriorityQueue
 q = Queue("fastrq_queue")
 q.push(1)
 q.push([2, 3])
-q.push_ni(1) # got [3, False]
+q.push_ni(1) # got [3, False]. `ni` stands `not inside`
+q.push_ae(1) # got 4. `ae` stands `already exists`
+q.push_ne(1) # got False. `ne` stands `not already exist`
 q.ttl(10)   # set the lifetime in seconds
 q.range(0, -1)  # got ['1', '2', '3']
 q.range(0, 1)  # got ['1', '2']
 q.indexof_one(1); # got 0
 q.indexof_one(2); # got 1
 q.indexof_one(4); # got None
-q.indexofmany([1, 2, 4]); # got {1: 0, 2: 1, 4: None}
+q.indexof_many([1, 2, 4]); # got {1: 0, 2: 1, 4: None}
 # push only if the member not inside the queue
 q.push_ni(4) # got [4, True]
 q.pop()
@@ -128,7 +70,7 @@ cq.push(3)
 cq.push(4) # got "err_qf"
 of_cq = OfCappedQueue("fastrq_of_capped_queue", 3)
 of_cq.push(1)
-of_cq.push([2, 3, 4])  # "1" would be pushed out
+of_cq.push([2, 3, 4])  # "1" would be forced out
 
 
 # deque
@@ -162,3 +104,68 @@ s.pop()
 s.push_ni(4)
 
 ```
+
+## Data types
+
+### Queue
+
++ first in and first out
++ unlimited capacity
++ support batch push and batch pop
+
+### Deque
+
+Derive from queue with more features
+
++ support push front and push back
++ support pop front and pop back
+
+### Capped Queue/Deque
+
+Derive from queue/deque with more features
+
++ Have fixed capacity
++ Push to a full one would fail
++ Push to one whose positions are not enough would fail
+
+### Overflow-able Capped Queue/Deque
+
+Derive from capped queue/deque with more features
+
++ The queue length would never exceed its capacity
++ Push to an end would force out from the other end if one is full
+
+### Stack
+
++ Last in and First out
++ Unlimited capacity
++ Support batch push and batch pop
+
+### Capped Stack
+
+Derive from Stack with more features
+
++ Have fixed capacity
++ Push to a full capped stack would fail
++ Push to a capped stack whose positions are not enough would fail
+
+### Priority Queue
+
++ The lower the score, the higher the priority
++ Unlimited capacity
++ Support batch push and batch pop
+
+### Capped Priority Queue
+
+Derive from Priority Queue with more features
+
++ Have fixed capacity
++ Push to a full one would fail
++ Push to a capped one whose positions are not enough would fail
+
+### Overflow-able Capped Priority Queue
+
+Derive from Capped Priority Queue with more features
+
++ The queue length would never exceed its capacity
++ Push to would force out the lowest priority if queue is full
