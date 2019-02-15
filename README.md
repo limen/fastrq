@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/limen/fastrq.svg?branch=master)](https://travis-ci.org/limen/fastrq)
 
+[Wiki](https://github.com/limen/fastrq/wiki)
+
 [Fastrq for PHP](https://github.com/limen/fastrq-php)
 
 ## Features
