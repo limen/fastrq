@@ -49,9 +49,9 @@ from fastrq.priorityqueue import PriorityQueue
 q = Queue("fastrq_queue")
 q.push(1)
 q.push([2, 3])
-q.push_ni(1) # got [3, False]. `ni` stands `not inside`
-q.push_ae(1) # got 4. `ae` stands `already exists`
-q.push_ne(1) # got False. `ne` stands `not already exist`
+q.push_ni(1) # got [3, False]. `ni` stands for `not inside`
+q.push_ae(1) # got 4. `ae` stands for `already exists`
+q.push_ne(1) # got False. `ne` stands for `not already exist`
 q.ttl(10)   # set the lifetime in seconds
 q.range(0, -1)  # got ['1', '2', '3']
 q.range(0, 1)  # got ['1', '2']
